@@ -1,0 +1,41 @@
+{
+  "network": "sepolia",
+  "timestamp": "2025-09-18T23:16:52.643Z",
+  "deployer": "0x68770934cF4653F0f4287591c84d663De0574782",
+  "contracts": {
+    "USDC": {
+      "address": "0x6E22Bc1f1B1d9f58A765142eb307909CcaF15496",
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "decimals": "6"
+    },
+    "SubscriptionManager": {
+      "address": "0xaE0Ee3F2A610b981994653671bf8C6dBef8A8749",
+      "name": "SubNFT",
+      "symbol": "SUBNFT"
+    }
+  },
+  "plans": [
+    {
+      "id": "1",
+      "name": "DeFi Analytics Pro",
+      "price": "29990000",
+      "description": "Advanced DeFi analytics and portfolio tracking",
+      "creator": "0x68770934cF4653F0f4287591c84d663De0574782"
+    },
+    {
+      "id": "2",
+      "name": "Web3 Gaming Hub",
+      "price": "19990000",
+      "description": "Premium gaming features and exclusive NFT drops",
+      "creator": "0x68770934cF4653F0f4287591c84d663De0574782"
+    },
+    {
+      "id": "3",
+      "name": "NFT Marketplace Plus",
+      "price": "39990000",
+      "description": "Advanced NFT trading tools and market insights",
+      "creator": "0x68770934cF4653F0f4287591c84d663De0574782"
+    }
+  ]
+}
