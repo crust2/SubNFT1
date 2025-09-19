@@ -244,36 +244,3 @@ web3-subscription-app/
 3. **Contract Verification**: Use `npm run verify` to verify contracts on Etherscan
 4. **Gas Optimization**: Contracts are optimized for hackathon speed, not production gas efficiency
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **"Contract not initialized"**: Make sure contracts are deployed and addresses are in `.env`
-2. **"Insufficient funds"**: Get Sepolia ETH from faucets
-3. **"Transaction failed"**: Check gas limits and network connectivity
-4. **CORS errors**: Ensure backend is running on port 5000
-
-### Getting Help
-
-- Check the console logs for detailed error messages
-- Verify your environment variables are set correctly
-- Ensure you have sufficient Sepolia ETH for gas fees
-- Make sure the backend server is running
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly on Sepolia testnet
-5. Submit a pull request
-
----
-
-**Happy Building! 🚀**
-
-For questions or support, please open an issue on GitHub.
