@@ -1,16 +1,16 @@
 {
   "network": "sepolia",
-  "timestamp": "2025-09-18T23:16:52.643Z",
+  "timestamp": "2025-09-19T02:43:42.442Z",
   "deployer": "0x68770934cF4653F0f4287591c84d663De0574782",
   "contracts": {
     "USDC": {
-      "address": "0x6E22Bc1f1B1d9f58A765142eb307909CcaF15496",
+      "address": "0x47809E26DbCb6D80F13333ebc692BFEbc1eE2C5F",
       "name": "USD Coin",
       "symbol": "USDC",
       "decimals": "6"
     },
     "SubscriptionManager": {
-      "address": "0xaE0Ee3F2A610b981994653671bf8C6dBef8A8749",
+      "address": "0x7591F4fDA2f0F467C2C97369c9D1384C0c07beFF",
       "name": "SubNFT",
       "symbol": "SUBNFT"
     }

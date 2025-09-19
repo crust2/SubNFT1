@@ -14,7 +14,7 @@ contract USDC is ERC20, Ownable, Pausable {
     uint8 private constant _decimals = 6;
     
     constructor() ERC20("USD Coin", "USDC") {
-        // Mint initial supply for testing (1,000,000 USDC)
+
         _mint(msg.sender, 1000000 * 10**_decimals);
     }
     
@@ -22,15 +22,15 @@ contract USDC is ERC20, Ownable, Pausable {
         return _decimals;
     }
     
-    // Mint function for testing purposes
+    
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
     
-    // Function to allow users to get test USDC (for demo purposes)
+    
     function faucet() external {
         require(balanceOf(msg.sender) == 0, "Already claimed faucet");
-        _mint(msg.sender, 1000 * 10**_decimals); // 1000 USDC
+        _mint(msg.sender, 1000 * 10**_decimals);
     }
     
     function pause() external onlyOwner {

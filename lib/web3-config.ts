@@ -3,8 +3,8 @@ import { defaultWagmiConfig } from "@web3modal/wagmi/react/config"
 
 // Contract addresses - replace with your deployed contract addresses
 export const CONTRACT_ADDRESSES = {
-  SUBSCRIPTION_MANAGER: process.env.NEXT_PUBLIC_SUBSCRIPTION_CONTRACT || "0xaE0Ee3F2A610b981994653671bf8C6dBef8A8749",
-  USDC_TOKEN: process.env.NEXT_PUBLIC_USDC_CONTRACT || "0x6E22Bc1f1B1d9f58A765142eb307909CcaF15496",
+  SUBSCRIPTION_MANAGER: process.env.NEXT_PUBLIC_SUBSCRIPTION_CONTRACT || "0x7591F4fDA2f0F467C2C97369c9D1384C0c07beFF",
+  USDC_TOKEN: process.env.NEXT_PUBLIC_USDC_CONTRACT || "0x47809E26DbCb6D80F13333ebc692BFEbc1eE2C5F",
 } as const
 
 // Subscription contract ABI - matches deployed contract

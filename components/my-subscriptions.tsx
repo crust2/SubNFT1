@@ -31,14 +31,14 @@ export function MySubscriptions() {
   const { 
     renewSubscription, 
     cancelSubscription, 
-    toggleAutoRenewal, 
+    toggleAutoRenewal: toggleAutoRenewalContract, 
     processAutoRenewal,
     isPending, 
     isConfirming, 
     error: txError 
   } = useSubscriptionActions()
 
-  // For demo purposes, use mock data if no real data
+  // Only show real user subscriptions, no mock data
   const subscriptions = userTokenIds?.length
     ? userTokenIds.map((tokenId) => {
         // In a real app, you'd fetch details for each token
@@ -46,10 +46,7 @@ export function MySubscriptions() {
         const planDetails = MOCK_PLANS.find((p) => p.id === mockSub.planId)
         return formatUserSubscription(tokenId, mockSub, planDetails)
       })
-    : MOCK_USER_SUBSCRIPTIONS.map((sub) => {
-        const planDetails = MOCK_PLANS.find((p) => p.id === sub.planId)
-        return formatUserSubscription(sub.tokenId, sub, planDetails)
-      })
+    : []
 
   const handleRenew = async (tokenId: bigint, price: bigint) => {
     if (!isConnected) {
@@ -95,7 +92,7 @@ export function MySubscriptions() {
 
     setActioningToken(tokenId)
     try {
-      toggleAutoRenewal(tokenId)
+      toggleAutoRenewalContract(tokenId)
       toast.success("Auto-renewal toggled!")
     } catch (error) {
       console.error("Auto-renewal toggle error:", error)
@@ -123,6 +120,14 @@ export function MySubscriptions() {
     }
   }
 
+  const toggleAutoRenewal = (tokenId: string) => {
+    setAutoRenewalSettings((prev) => ({
+      ...prev,
+      [tokenId]: !prev[tokenId],
+    }))
+    const isEnabled = autoRenewalSettings[tokenId]
+    toast.success(`Auto-renewal ${isEnabled ? "disabled" : "enabled"}`)
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -171,110 +176,126 @@ export function MySubscriptions() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {subscriptions.map((sub) => {
-          const daysRemaining = getDaysRemaining(sub.expiryDate)
-          const status = daysRemaining > 7 ? "active" : daysRemaining > 0 ? "expiring" : "expired"
+      {isConnected && subscriptions.length === 0 && (
+        <div className="text-center py-12">
+          <div className="glass rounded-2xl p-8 max-w-md mx-auto">
+            <h3 className="text-xl font-semibold mb-3">No Subscriptions Yet</h3>
+            <p className="text-muted-foreground mb-4">
+              You haven't purchased any subscription plans yet. Browse our plans above to get started!
+            </p>
+            <div className="text-sm text-muted-foreground">
+              💡 Connect your wallet and get test USDC to start subscribing
+            </div>
+          </div>
+        </div>
+      )}
 
-          return (
-            <Card
-              key={sub.tokenId.toString()}
-              className={`glass p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden ${getGlowClass(status)}`}
-            >
-              <Badge className={`absolute top-4 right-4 ${getStatusColor(status)} font-semibold`}>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </Badge>
+      {subscriptions.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {subscriptions.map((sub) => {
+            const daysRemaining = getDaysRemaining(sub.expiryDate)
+            const status = daysRemaining > 7 ? "active" : daysRemaining > 0 ? "expiring" : "expired"
 
-              <div className="space-y-4">
-                <div className="aspect-square rounded-lg overflow-hidden bg-muted/20">
-                  <img
-                    src={`/abstract-geometric-shapes.png?key=vfc6a&height=300&width=300&query=${sub.planDetails?.name || "NFT"} subscription token`}
-                    alt={`${sub.planDetails?.name || "Subscription"} NFT`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+            return (
+              <Card
+                key={sub.tokenId.toString()}
+                className={`glass p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl relative overflow-hidden ${getGlowClass(status)}`}
+              >
+                <Badge className={`absolute top-4 right-4 ${getStatusColor(status)} font-semibold`}>
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </Badge>
 
-                <div className="space-y-3">
-                  <h3 className="text-lg font-bold text-card-foreground">{sub.planDetails?.name || "Unknown Plan"}</h3>
-                  <p className="text-sm text-muted-foreground">NFT ID: #{sub.tokenId.toString()}</p>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
-                    <span>Expires: {formatExpiryDate(sub.expiryDate)}</span>
-                  </div>
-                  {daysRemaining > 0 && <p className="text-xs text-muted-foreground">{daysRemaining} days remaining</p>}
-
-                  {/* Auto-renewal Toggle */}
-                  <div className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/30">
-                    <span className="text-sm">Auto-renewal</span>
-                    <Switch
-                      checked={autoRenewalSettings[sub.tokenId.toString()] || false}
-                      onCheckedChange={() => handleToggleAutoRenewal(sub.tokenId)}
-                      size="sm"
+                <div className="space-y-4">
+                  <div className="aspect-square rounded-lg overflow-hidden bg-muted/20">
+                    <img
+                      src={`/abstract-geometric-shapes.png?key=vfc6a&height=300&width=300&query=${sub.planDetails?.name || "NFT"} subscription token`}
+                      alt={`${sub.planDetails?.name || "Subscription"} NFT`}
+                      className="w-full h-full object-cover"
                     />
                   </div>
+
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-bold text-card-foreground">{sub.planDetails?.name || "Unknown Plan"}</h3>
+                    <p className="text-sm text-muted-foreground">NFT ID: #{sub.tokenId.toString()}</p>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span>Expires: {formatExpiryDate(sub.expiryDate)}</span>
+                    </div>
+                    {daysRemaining > 0 && <p className="text-xs text-muted-foreground">{daysRemaining} days remaining</p>}
+
+                    {/* Auto-renewal Toggle */}
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-muted/10 border border-border/30">
+                      <span className="text-sm">Auto-renewal</span>
+                      <Switch
+                        checked={autoRenewalSettings[sub.tokenId.toString()] || false}
+                        onCheckedChange={() => toggleAutoRenewal(sub.tokenId.toString())}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-primary/10 border-primary/30 text-primary hover:text-primary bg-transparent"
+                      onClick={() => handleRenew(sub.tokenId, sub.planDetails?.price || 0n)}
+                      disabled={isPending || isConfirming || actioningToken === sub.tokenId}
+                    >
+                      {actioningToken === sub.tokenId && isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="w-4 h-4" />
+                      )}
+                      Renew
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-secondary/10 border-secondary/30 text-secondary hover:text-secondary bg-transparent"
+                      disabled
+                    >
+                      <Download className="w-4 h-4" />
+                      Download
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-primary/10 border-primary/30 text-primary hover:text-primary bg-transparent"
+                      onClick={() => handleProcessAutoRenewal(sub.tokenId)}
+                      disabled={isPending || isConfirming || actioningToken === sub.tokenId || daysRemaining > 0}
+                    >
+                      {actioningToken === sub.tokenId && isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="w-4 h-4" />
+                      )}
+                      Auto-renew
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-destructive/10 border-destructive/30 text-destructive hover:text-destructive bg-transparent"
+                      onClick={() => handleCancel(sub.tokenId)}
+                      disabled={isPending || isConfirming || actioningToken === sub.tokenId}
+                    >
+                      {actioningToken === sub.tokenId && isPending ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <X className="w-4 h-4" />
+                      )}
+                      Cancel & Refund
+                    </Button>
+                  </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-primary/10 border-primary/30 text-primary hover:text-primary bg-transparent"
-                    onClick={() => handleRenew(sub.tokenId, sub.planDetails?.price || 0n)}
-                    disabled={isPending || isConfirming || actioningToken === sub.tokenId}
-                  >
-                    {actioningToken === sub.tokenId && isPending ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <RefreshCw className="w-4 h-4" />
-                    )}
-                    Renew
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-secondary/10 border-secondary/30 text-secondary hover:text-secondary bg-transparent"
-                    disabled
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-primary/10 border-primary/30 text-primary hover:text-primary bg-transparent"
-                    onClick={() => handleProcessAutoRenewal(sub.tokenId)}
-                    disabled={isPending || isConfirming || actioningToken === sub.tokenId || daysRemaining > 0}
-                  >
-                    {actioningToken === sub.tokenId && isPending ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <RefreshCw className="w-4 h-4" />
-                    )}
-                    Auto-renew
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="backdrop-blur-2xl bg-slate-800/90 border border-slate-400/30 hover:bg-destructive/10 border-destructive/30 text-destructive hover:text-destructive bg-transparent"
-                    onClick={() => handleCancel(sub.tokenId)}
-                    disabled={isPending || isConfirming || actioningToken === sub.tokenId}
-                  >
-                    {actioningToken === sub.tokenId && isPending ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <X className="w-4 h-4" />
-                    )}
-                    Cancel & Refund
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          )
-        })}
-      </div>
+              </Card>
+            )
+          })}
+        </div>
+      )}
     </section>
   )
 }

@@ -15,17 +15,17 @@ contract SubscriptionManager is ERC721, Ownable, ReentrancyGuard, Pausable {
 
     Counters.Counter private _tokenIdCounter;
 
-    // Subscription plan structure
+    
     struct SubscriptionPlan {
         uint256 id;
         string name;
-        uint256 price; // Price in USDC (6 decimals)
+        uint256 price; 
         string description;
         address creator;
         bool isActive;
     }
 
-    // Subscription details for each NFT
+    
     struct SubscriptionDetails {
         uint256 planId;
         uint256 expiryDate;
@@ -33,17 +33,17 @@ contract SubscriptionManager is ERC721, Ownable, ReentrancyGuard, Pausable {
         bool autoRenewal;
     }
 
-    // State variables
+    
     IERC20 public usdcToken;
     mapping(uint256 => SubscriptionPlan) public subscriptionPlans;
-    mapping(uint256 => SubscriptionDetails) public subscriptions; // tokenId => details
-    mapping(address => uint256[]) public userSubscriptions; // user => tokenIds
-    mapping(uint256 => uint256[]) public planSubscribers; // planId => tokenIds
+    mapping(uint256 => SubscriptionDetails) public subscriptions; 
+    mapping(address => uint256[]) public userSubscriptions; 
+    mapping(uint256 => uint256[]) public planSubscribers; 
     
     uint256 public nextPlanId = 1;
     uint256 public constant DEFAULT_DURATION = 30 days;
     
-    // Events
+    
     event PlanCreated(uint256 indexed planId, string name, uint256 price, address creator);
     event SubscriptionCreated(uint256 indexed tokenId, uint256 indexed planId, address indexed user, uint256 expiryDate);
     event SubscriptionRenewed(uint256 indexed tokenId, uint256 newExpiryDate);

@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "D:\\web3-subscription-app\\contracts\\SubscriptionManager.sol": {
-      "lastModificationDate": 1758237306653,
-      "contentHash": "d75a8d114f77f5f7e895a2bf3fed41f3",
+      "lastModificationDate": 1758247963726,
+      "contentHash": "43a57145744016b094e8192c8de690d9",
       "sourceName": "contracts/SubscriptionManager.sol",
       "solcConfig": {
         "version": "0.8.19",
@@ -776,8 +776,8 @@
       ]
     },
     "D:\\web3-subscription-app\\contracts\\USDC.sol": {
-      "lastModificationDate": 1758222461743,
-      "contentHash": "459b44bde60e5db6df26c4296833c992",
+      "lastModificationDate": 1758247641274,
+      "contentHash": "704f39d55a59efc74e1e1ec508c97d5a",
       "sourceName": "contracts/USDC.sol",
       "solcConfig": {
         "version": "0.8.19",
